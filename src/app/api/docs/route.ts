@@ -127,22 +127,29 @@ export async function DELETE(req: NextRequest) {
     const client = await clientPromise;
     const db = client.db(dbName);
 
-    const { id } = await req.json();
+    const { ids } = await req.json();
 
-    if (!id) {
-      return NextResponse.json({ error: "id is required" }, { status: 400 });
+    if (!Array.isArray(ids)) {
+      return NextResponse.json(
+        { error: "Docs Must be an array" },
+        { status: 400 }
+      );
     }
 
-    const deletedDoc = await db
-      .collection(document_names.scanned_docs)
-      .deleteOne({
+    if (ids.length < 1) {
+      return NextResponse.json({ error: "ids are required" }, { status: 400 });
+    }
+
+    for (let id of ids) {
+      await db.collection(document_names.scanned_docs).deleteOne({
         _id: new ObjectId(id as string),
         user_id: userId,
       });
+    }
 
     return NextResponse.json({
-      message: `doc deleted`,
-      status: deletedDoc.acknowledged,
+      message: `docs deleted`,
+      status: true,
     });
   } catch (error) {
     return NextResponse.json(
