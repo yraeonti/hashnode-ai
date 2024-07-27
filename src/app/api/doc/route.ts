@@ -50,3 +50,43 @@ export async function GET(req: NextRequest, res: NextResponse) {
     );
   }
 }
+
+export async function DELETE(req: NextRequest) {
+  const { userId } = auth();
+
+  if (!userId) {
+    return NextResponse.json(
+      { error: "Error: No signed in user" },
+      { status: 401 }
+    );
+  }
+  try {
+    const client = await clientPromise;
+    const db = client.db(dbName);
+
+    const { id } = await req.json();
+
+    if (!id) {
+      return NextResponse.json({ error: "id is required" }, { status: 400 });
+    }
+
+    const deletedDoc = await db
+      .collection(document_names.scanned_docs)
+      .deleteOne({
+        _id: new ObjectId(id as string),
+        user_id: userId,
+      });
+
+    return NextResponse.json({
+      message: `doc deleted`,
+      status: deletedDoc.acknowledged,
+    });
+  } catch (error) {
+    return NextResponse.json(
+      {
+        error,
+      },
+      { status: 500 }
+    );
+  }
+}
