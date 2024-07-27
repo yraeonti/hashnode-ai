@@ -27,7 +27,10 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { useCustomAddTransaction } from "../api/use-custom-add-transaction";
 
 import { toast } from "sonner";
-import { useEditTransaction } from "../hooks/use-edit-transaction";
+
+import { useGetSingleTransaction } from "@/features/transaction/api/use-get-single-transaction";
+import { Loader2 } from "lucide-react";
+import { useEffect } from "react";
 
 const formSchema = z.object({
   transaction: z.string().min(2, {
@@ -50,20 +53,26 @@ const formSchema = z.object({
     message: "Category must be either debit or credit",
   }),
 });
-
-export function EditTransactionForm() {
+type Props = {
+  id: string;
+  onClose: () => void;
+};
+export function EditTransactionForm({ id, onClose }: Props) {
   const { mutateAsync: addTransaction, isPending } = useCustomAddTransaction();
-  const { onClose } = useEditTransaction();
+
+  const { isLoading, data, isError } = useGetSingleTransaction(id);
+  useEffect(() => {
+    if (data) {
+      form.reset({
+        ...data,
+      });
+    }
+  }, [data]);
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      transaction: "",
-      transaction_id: "",
-      amount: 0,
-      status: false,
-      date: "",
-      benefactor: "",
-      category: "debit",
+      ...data,
     },
   });
 
@@ -77,6 +86,14 @@ export function EditTransactionForm() {
       .catch((error: any) => {
         toast.error(error.message || "An error occurred"); // Ensure error.message is used to display the error
       });
+  }
+
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center w-full">
+        <Loader2 className="animate-spin text-muted-foreground" />
+      </div>
+    );
   }
   return (
     <Form {...form}>

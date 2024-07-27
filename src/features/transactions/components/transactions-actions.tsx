@@ -7,12 +7,13 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Copy, Edit, MoreVertical, Share, Trash } from "lucide-react";
+import { Copy, Edit, MoreHorizontal, Share, Trash } from "lucide-react";
 
 import { Transaction } from "@/types";
 import { Button } from "@/components/ui/button";
 import { useDeleteTransaction } from "../api/use-delete-transaction";
 import { toast } from "sonner";
+import { useEditTransaction } from "@/features/edit-transaction/hooks/use-edit-transaction";
 
 type TransactionsTableActionsProps = {
   transaction: Transaction;
@@ -22,6 +23,7 @@ export const TransactionsActions = ({
   transaction,
 }: TransactionsTableActionsProps) => {
   const { mutateAsync: deleteTransaction } = useDeleteTransaction();
+  const { onOpen } = useEditTransaction();
 
   const handleDeleteTransaction = () => {
     toast.loading("Deleting Transaction");
@@ -41,7 +43,7 @@ export const TransactionsActions = ({
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" className="h-8 w-8 p-0">
-          <MoreVertical className="h-4 w-4" />
+          <MoreHorizontal className="h-4 w-4" />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
@@ -55,7 +57,11 @@ export const TransactionsActions = ({
           <Copy className="ml-2 w-4 h-4" />
         </DropdownMenuItem>
         <DropdownMenuSeparator />
-        <DropdownMenuItem className="cursor-pointer flex items-center justify-between">
+        <DropdownMenuItem
+          disabled={false}
+          className="cursor-pointer flex items-center justify-between"
+          onClick={() => onOpen(transaction._id as string)}
+        >
           Edit Transaction
           <Edit className="ml-2 w-4 h-4" />
         </DropdownMenuItem>

@@ -2,6 +2,7 @@
 import { useMountedState } from "react-use";
 import { UploadImageSheet } from "@/features/upload-image/components/upload-image-sheet";
 import { CustomAddSheet } from "@/features/custom/components/custom-add-sheet";
+import { EditTransactionSheet } from "@/features/edit-transaction/components/edit-transaction-sheet";
 
 export const SheetProvider = () => {
   const isMounted = useMountedState();
@@ -11,6 +12,7 @@ export const SheetProvider = () => {
     <>
       <UploadImageSheet />
       <CustomAddSheet />
+      <EditTransactionSheet />
     </>
   );
 };
