@@ -17,20 +17,22 @@ export const TransactionsTable = () => {
   }, [data]);
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>All Transactions</CardTitle>
-      </CardHeader>
+    <>
+      <Card>
+        <CardHeader>
+          <CardTitle>All Transactions</CardTitle>
+        </CardHeader>
 
-      <CardContent>
-        <DataTable
-          loading={isLoading}
-          data={transactions as Transaction[]}
-          columns={transactions_columns}
-          searchKey="transaction"
-          isSearch={true}
-        />
-      </CardContent>
-    </Card>
+        <CardContent>
+          <DataTable
+            loading={isLoading}
+            data={transactions as Transaction[]}
+            columns={transactions_columns}
+            searchKey="transaction"
+            isSearch={true}
+          />
+        </CardContent>
+      </Card>
+    </>
   );
 };
