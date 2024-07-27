@@ -48,6 +48,7 @@ export const TransactionsActions = ({
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
         <DropdownMenuItem
+          disabled={false}
           className="cursor-pointer flex items-center justify-between"
           onClick={() =>
             navigator.clipboard.writeText(transaction.transaction_id)
@@ -67,12 +68,16 @@ export const TransactionsActions = ({
         </DropdownMenuItem>
         <DropdownMenuItem
           onClick={handleDeleteTransaction}
+          disabled={false}
           className="cursor-pointer flex items-center justify-between"
         >
           Delete Transaction
           <Trash className="ml-2 w-4 h-4" />
         </DropdownMenuItem>
-        <DropdownMenuItem className="cursor-pointer flex items-center justify-between">
+        <DropdownMenuItem
+          className="cursor-pointer flex items-center justify-between"
+          disabled={false}
+        >
           Share Invoice
           <Share className="ml-2 w-4 h-4" />
         </DropdownMenuItem>
