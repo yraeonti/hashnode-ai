@@ -90,3 +90,46 @@ export async function DELETE(req: NextRequest) {
     );
   }
 }
+
+export async function PATCH(req: NextRequest) {
+  const { userId } = auth();
+
+  if (!userId) {
+    return NextResponse.json(
+      { error: "Error: No signed in user" },
+      { status: 401 }
+    );
+  }
+  try {
+    const client = await clientPromise;
+    const db = client.db(dbName);
+
+    const { id, ...rest } = await req.json();
+
+    if (!id) {
+      return NextResponse.json({ error: "id is required" }, { status: 400 });
+    }
+
+    const updated = await db.collection(document_names.scanned_docs).updateOne(
+      {
+        _id: id,
+        user_id: userId,
+      },
+      {
+        ...rest,
+      }
+    );
+
+    return NextResponse.json({
+      message: "Doc updated",
+      status: updated.acknowledged,
+    });
+  } catch (error) {
+    return NextResponse.json(
+      {
+        error,
+      },
+      { status: 500 }
+    );
+  }
+}
