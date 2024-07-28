@@ -32,6 +32,7 @@ export const TransactionsTable = ({
           columns={transactions_columns}
           searchKey="transaction_name"
           loading={isLoading}
+          onDelete={() => {}}
         />
       </CardContent>
     </Card>
